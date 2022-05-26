@@ -1,32 +1,41 @@
-# ZDoo官方Docker镜像
+# 喧喧官方Docker镜像
 
-[toc]
+## 一、关于喧喧
 
-## 一、关于ZDoo
+喧喧是由ZDOO协同团队推出的一款轻量级、开放的企业协同聊天软件。
 
-ZDOO全协同办公系统涵盖了OA日常办公、CRM客户管理、现金流记账、文档管理、项目管理、团队分享、应用导航以及后台管理等应用模块，主要面向中小团队的企业内部管理。和市面上其他的产品相比，ZDOO更专注于为企业提供一体化、精简、高效的办公管理解决方案。
+喧喧官网：https://www.xuanim.com/
 
-随着互联网的发展，企业内部信息化管理的重要程度越来越高。企业信息化管理的水平决定了整个企业的运转效率和响应速度。我们团队也曾尝试了各种各样的管理软件，比如crm，oa等等。但遗憾的是这些软件大都功能冗杂晦涩，面目可憎。既然没有合适的轮子，那我们就自己来做自己的轮子吧。于是我们从2013年开始筹划准备，在2013年底正式启动ZDOO这个项目。我们的目的就是希望给众多的中小企业提供一个一体化的、精简的企业内部管理的解决方案。有了ZDOO，企业无需再搭建各种各样的crm系统，oa系统，论坛啊之类的，用一个软件即可解决企业不同应用场景的核心问题，帮助企业全面提升信息化、数字化管理水平。
+**为什么来做喧喧**
+我们在做ZDOO协同办公系统的时候，就在寻找轻量级、跨平台、容易开发的聊天软件解决方案。但很遗憾的是我们找了一圈都不太靠谱。有很多解决方案依赖包太多，安装部署各种问题。还有普遍的客户端聊天软件都是用传统的GUI方式编写，界面一般，二次开发困难。国内很多做聊天软件存在各种限制。
 
-官网：https://www.zdoo.com/
+找不到合适的轮子，就自己来做一个吧。这个项目从2015年底左右就已经启动了。当时的技术方案是用的nw.js。一直是内部在测试，没有正式对外发布。今年春节过后，我们迁移到了electron平台上面，于2017年2月22日正式发布了第一个版本。
+
+**喧喧的定位**
+喧喧定位是企业内部的轻量级的聊天软件。为了让喧喧足够轻量级，客户端软件使用了html5的技术，XXD服务器端采用Go语言实现，Go语言具备高性能、支持高并发、易于学习使用。喧喧不仅支持文字和图片交流形式，还提供音视频聊天、桌面共享等功能。喧喧可以当作协同软件的一个延伸和补充。
+
+**喧喧足够轻量级**
+- 喧喧的客户端使用html5技术，和服务器端通讯使用socket，附件的上传下载使用http协议。
+- 喧喧的XXD服务器端采用Go语言实现，Go语言具备高性能、支持高并发。
+- 喧喧的服务器端现在和ZDOO协同绑在一起，我们也把服务器端的功能独立出来来，大家可以独立部署。
+- 喧喧的附件上传下载借助webserver来避免消息的阻塞。消息存储使用mysql，表结构也非常简单。
+
+所以说喧喧是一个已经实现基础功能的，跨平台的，轻量级的，非常容易进行二次开发的企业协同聊天解决方案！
 
 
 ## 二、支持的标签
-- 基础版：6.9.1
-- 企业版：5.7.4
-- 记账版：1.0
-- 工作流版：1.0
+- 5.6
 
 ## 三、获取镜像
-推荐从 [Docker Hub Registry](https://hub.docker.com/r/easysoft/zdoo) 拉取我们构建好的官方Docker镜像【目前提供国内加速镜像地址】
+推荐从 [Docker Hub Registry](https://hub.docker.com/r/easysoft/xuanxuan) 拉取我们构建好的官方Docker镜像【目前提供国内加速镜像地址】
 ```bash
-docker pull hub.qucheng.com/app/zdoo:6.9.1
+docker pull hub.qucheng.com/app/xuanxuan:5.6
 ```
 
-如需使用指定的版本，可以拉取一个包含版本标签的镜像，在Docker Hub仓库中查看 [可用版本列表](https://hub.docker.com/r/easysoft/zdoo/tags/) 
+如需使用指定的版本，可以拉取一个包含版本标签的镜像，在Docker Hub仓库中查看 [可用版本列表](https://hub.docker.com/r/easysoft/xuanxuan/tags/) 
 
 ```bash
-docker pull hub.qucheng.com/app/zdoo:[TAG]
+docker pull hub.qucheng.com/app/xuanxuan:[TAG]
 ```
 
 ## 四、持久化数据
@@ -34,21 +43,21 @@ docker pull hub.qucheng.com/app/zdoo:[TAG]
 
 为了数据持久化，你应该挂载持久化目录：
 
-- /data zdoo持久化数据
+- /data 喧喧持久化数据
 
 如果挂载的目录为空，首次启动会自动初始化相关文件
 
 ```bash
 $ docker run -it \
     -v $PWD/data:/data \
-docker pull hub.qucheng.com/app/zdoo:6.9.1
+docker pull hub.qucheng.com/app/xuanxuan:5.6
 ```
 
 或者修改 docker-compose.yml 文件，添加持久化目录配置
 
 ```bash
 services:
-  zdoo:
+  xuanxuan:
   ...
     volumes:
       - /path/to/zentao-persistence:/data
@@ -61,31 +70,25 @@ services:
 | DEBUG            | NULL         | 是否打开调试信息，默认关闭       |
 | PHP_SESSION_TYPE | files         | php session 类型，files \| redis |
 | PHP_SESSION_PATH | /data/session | php session 存储路径             |
-| MYSQL_HOST       | 127.0.0.1     | MySQL 主机地址                   |
-| MYSQL_PORT       | 3306          | MySQL 端口                       |
-| MYSQL_DATABASE   | zdoo          | zentao数据库名称                 |
-| MYSQL_USER       | root          | MySQL用户名                      |
-| MYSQL_PASSWORD   | pass4zDoo   | MySQL密码                        |
+
 
 
 ## 六、运行 
 ### 6.1 单机Docker-compose方式运行
 
-通过Docker-compse运行，默认会运行一个独立的MySQL服务，相关命令如下：
-
 ```bash
-# 启动服务（zentao和mysql）
+# 启动服务
 make run
 
 # 查看服务状态
 make ps
 
 # 查看服务日志
-docker-compose logs -f zdoo  # 查看zentao日志
-docker-compose logs -f mysql # 查看mysql日志
+docker-compose logs -f xuanxuan  # 查看zentao日志
+
 ```
 
 > **说明：**
 >
-> - 通过docker-compose运行，会拉取mysql镜像，并运行
-> - 启动成功后，打开浏览器输入 `http://<你的IP>:8081` 通过向导页面进行安装
+> - 启动成功后，打开浏览器输入 `http://<你的IP>:8082` 访问管理后台
+> - 默认用户名：`admin`，默认密码：`123456`
