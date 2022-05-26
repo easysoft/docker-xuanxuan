@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# shellcheck disable=SC1091
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+[ -n "${DEBUG:+1}" ] && set -x
+
+# Load libraries
+. /opt/easysoft/scripts/liblog.sh
+. /opt/easysoft/scripts/libmysql.sh
+. /opt/easysoft/scripts/libfs.sh
+
+# Load Apache/PHP//zdoo environment variables
+. /etc/s6/s6-init/envs
+
+# Functions
+
+########################
+# Prepare persistence directories
+# Arguments:
+#   None
+# Returns:
+#   None
+#########################
+prepare_persistence() {
+
+    info "Prepare persistence directories."
+    for pdir in $PHP_PERSISTENCE_LIST
+    do
+        # Ensure a directory exists and,is owned by the given user
+        ensure_dir_exists "$pdir" "nobody" "nogroup"
+    done
+
+    for ldir in $PERSISTENCE_LINK_LIST
+    do
+        if [ ! -f /data/zbox/.inited_persistence ];then
+            move_and_make_soft_link "$ldir" "${ldir/data/opt}" "nobody" "nogroup"
+        else
+            make_soft_link "$ldir" "${ldir/data/opt}" "nobody" "nogroup"
+        fi
+
+    done
+
+    touch /data/zbox/.inited_persistence
+}
+
+
+########################
+# Prepare PHP confige file
+# Arguments:
+#   None
+# Returns:
+#   None
+#########################
+prepare_php_configure(){
+    local php_ini="/opt/zbox/etc/php/php.ini"
+    info "Render php.ini with environment variables."
+    /usr/bin/render-template ${php_ini}.tpl > ${php_ini}
+}
+
+#==============Main===============
+
+# Prepare persistence
+prepare_persistence
+
+# Prepare php
+prepare_php_configure

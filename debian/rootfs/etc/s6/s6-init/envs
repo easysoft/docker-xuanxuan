@@ -1,0 +1,34 @@
+#!/bin/bash
+
+export LD_LIBRARY_PATH=/opt/zbox/run/
+
+#==========#
+#   php    #
+#==========#
+export PHP_SESSION_TYPE=${PHP_SESSION_TYPE:-files}
+export PHP_SESSION_PATH=${PHP_SESSION_PATH:-/data/php/session}
+export PHP_ERROR_LOG=${PHP_ERROR_LOG:-/data/php/log/error.log}
+
+#===========#
+#   MySQL   #
+#===========#
+export MYSQL_HOST=${MYSQL_HOST:-127.0.0.1}
+export MYSQL_PORT=${MYSQL_PORT:-3306}
+
+# ======================#
+# Persistence directory #
+#=======================#
+export PHP_PERSISTENCE_LIST="
+/data/php/log
+/data/php/session"
+
+#==========================================#
+# Persistence directory and make soft link #
+#==========================================#
+export PERSISTENCE_LINK_LIST="
+/data/zbox/run/xxd/config
+/data/zbox/app/xxb/config
+/data/zbox/app/xxb/tmp
+/data/zbox/app/xxb/www/data
+/data/zbox/data
+"
