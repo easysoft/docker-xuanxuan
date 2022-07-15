@@ -7,7 +7,7 @@ build: ## 构建镜像
 	docker build --build-arg VERSION=$(TAG) -t hub.qucheng.com/app/xuanxuan:$(TAG) -f Dockerfile .
 
 push: ## push 镜像
-	docker push hub.qucheng.com/app/zdoo:$(TAG)
+	docker push hub.qucheng.com/app/xuanxuan:$(TAG)
 
 run: ## 运行喧喧
 	docker-compose -f docker-compose.yml up -d
